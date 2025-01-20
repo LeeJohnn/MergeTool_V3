@@ -1,0 +1,19 @@
+Metadata-Version: 1.2
+Name: BTFWMergeTool-v3
+Version: 0.0.1
+Summary: Tool for creating bluetooth firmware distributing format
+Home-page: UNKNOWN
+Author: c.y.lee28
+Author-email: c.y.lee28@realtek.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6

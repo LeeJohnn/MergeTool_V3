@@ -1,0 +1,15 @@
+README.md
+setup.cfg
+setup.py
+src/BTFWMergeTool_v3/Information.py
+src/BTFWMergeTool_v3/MergeTool.py
+src/BTFWMergeTool_v3/PatchImageSection.py
+src/BTFWMergeTool_v3/PatchStartAddress.py
+src/BTFWMergeTool_v3/Project.py
+src/BTFWMergeTool_v3/__init__.py
+src/BTFWMergeTool_v3.egg-info/PKG-INFO
+src/BTFWMergeTool_v3.egg-info/SOURCES.txt
+src/BTFWMergeTool_v3.egg-info/dependency_links.txt
+src/BTFWMergeTool_v3.egg-info/entry_points.txt
+src/BTFWMergeTool_v3.egg-info/requires.txt
+src/BTFWMergeTool_v3.egg-info/top_level.txt

@@ -1,0 +1,70 @@
+[MergePatchImage]
+# Currently only supports rule 3
+rule_version = 3
+
+# Auto update fw version with current timestamp
+auto_update_version = true
+
+# Manually_set_timestamp only valid when auto_update_version set to false
+manually_set_timestamp = 2024-07-10T11:33:55
+
+[Section]
+    [Section.Section_0]
+        opcode = 1
+        project_name = "RTL8852C"
+
+        # .bin file path
+        path = "ImageFile/rtl8852c_bcut_bt40_fw_asic_rom_patch.bin"
+
+        # Project ID reference https://wiki.realtek.com/display/BTFWKNOW/BT+Chip+Version+In+FW
+        project_id = 25
+
+        # 0 for Test chip, 1 for A-cut, 2 for B-cut
+        ic_cut = 2
+
+        # The privacy key of this key ID signs this security header.
+        # If it is not a security IC, the key ID is 0
+        key_id = 0x0
+
+        # The address of the rom_code_patch_start_address variable
+        addr_patch_start_address = 0x80140090
+
+        # The value of the rom_code_patch_start_address variable
+        val_patch_start_address = 0x80110b30
+
+        # The address of the security_header_buffer_remain variable
+        addr_security_header_buffer_remain_size = 0x801405a0
+
+        # The value of the security_header_buffer_remain variable
+        val_security_header_buffer_remain_size = 529
+        
+        # The patch image download order. 
+        # The smaller the value, the first to download. 
+        # In addition, if the patch image's start address equals ROM_CODE_PAGE_START_ADDRESS, its index must be 0.
+        index = 0
+
+    [Section.Section_1]
+        opcode = 1
+        project_name = "RTL8852C"
+        path = "ImageFile/rtl8852c_bcut_bt40_fw_asic_rom_patch2.bin"
+        project_id = 25
+        ic_cut = 2
+        key_id = 0x0
+        addr_patch_start_address = 0x80140090
+        val_patch_start_address = 0x8010e7e0
+        addr_security_header_buffer_remain_size = 0
+        val_security_header_buffer_remain_size = 0
+        index = 1
+
+    [Section.Section_2]
+        opcode = 1
+        project_name = "RTL8852C"
+        path = "ImageFile/rtl8852c_bcut_bt40_fw_asic_rom_patch3.bin"
+        project_id = 25
+        ic_cut = 2
+        key_id = 0x0
+        addr_patch_start_address = 0x80140090
+        val_patch_start_address = 0x80108540
+        addr_security_header_buffer_remain_size = 0
+        val_security_header_buffer_remain_size = 0
+        index = 2
