@@ -13,13 +13,14 @@ class MergeTool:
         # This is a container for storing final binary file
         self._merge_patch_buf = bytearray()
         self._version_timestamp = datetime.now()
+        self.git_version = ""
         self._logStream = StringIO()
         self._export_folder_path = "Export/"
         # Used to check that the same [project_id,ic_cut,key_id,ota_enable] cannot have different opcodes or same index.
         self._info_features_dict = {}
         # Used to sort the sections by download index and [project_id,ic_cut,key_id,ota_enable]
         self._section_dict = {}
-        
+
         # Load config
         try:
             self._top_level_config = toml.load(self.toml_file_path)
@@ -30,10 +31,7 @@ class MergeTool:
         self.__create_export_dir_if_not_exist()
 
         # Initiate timestamp
-        self.__replace_timestamp_if_manually_setting_on()
-        
-        # Initiate export filename
-        self.__export_filename_setup()
+        self.__replace_timestamp_if_manually_setting_on()        
 
         # Initiate logger
         self.__logger_init()
@@ -64,6 +62,10 @@ class MergeTool:
     def __export_filename_setup(self) -> None:
         # file name pattern:
         # bt_fw_asic_rom_patch_{year}{month}{day}{hour}{minute}{second}
+        section = self._top_level_config["Section"]
+        section_0 = section["Section_0"]
+        project_name = section_0["project_name"]
+
         timestamp = self._version_timestamp
         year_str = str(timestamp.year).zfill(4)
         month_str = str(timestamp.month).zfill(2)
@@ -71,7 +73,12 @@ class MergeTool:
         hour_str = str(timestamp.hour).zfill(2)
         minute_str = str(timestamp.minute).zfill(2)
         second_str = str(timestamp.second).zfill(2)
-        self._export_filename=f"bt_fw_asic_rom_patch_{year_str}{month_str}{day_str}_{hour_str}{minute_str}{second_str}"
+        self._export_filename=f"{project_name.lower()}_bt_fw_asic_rom_patch_{year_str}{month_str}{day_str}_{hour_str}{minute_str}{second_str}"
+
+        version_mdhms = hex(timestamp.month * 100000000 + timestamp.day * 1000000 + timestamp.hour * 10000 + timestamp.minute * 100 + timestamp.second).upper()[2:]
+        if len(version_mdhms) < 8:
+            version_mdhms = '0' + version_mdhms
+        self._export_filename += f"_0x{version_mdhms[:4]}_{version_mdhms[4:]}_git_{self.git_version}"
 
     def exec(self) -> None:
         config = self._top_level_config["MergePatchImage"]
@@ -79,7 +86,8 @@ class MergeTool:
             self.__exec_merge_rule_v3()
         else:
             raise RuntimeError("The rule_version is invalid.")
-
+        # Initiate export filename
+        self.__export_filename_setup()
         self.__save_bin_and_log()
 
     def __exec_merge_rule_v3(self) -> None:
@@ -121,7 +129,7 @@ class MergeTool:
             if section_config[section]['opcode'] == 1:
                self.__exec_opcode_1(section)
             else:
-                raise RuntimeError(f"The opcode in {section} is invalid.")
+                raise RuntimeError(f"The opcode in {section} is invalid.")            
             
         logger.info("Sort the sections")
         
@@ -145,6 +153,17 @@ class MergeTool:
         section = PatchImageSection(section_name, section_config[section_name]['opcode'], info_data, section_config[section_name]['path'], self._logger.getChild(section_name))
         section_data = section.get_bytes()
         
+        if self.git_version == "":
+            git_version_u32 = struct.unpack("<I", section_data[-8:-4])[0]
+            self.git_version = f"{git_version_u32:08x}"
+            timestamp = self._version_timestamp
+            version_mdhms = timestamp.month * 100000000 + timestamp.day * 1000000 + timestamp.hour * 10000 + timestamp.minute * 100 + timestamp.second
+            version_mdhms_buf = struct.pack("<I", version_mdhms)
+            section_data = bytearray(section_data)
+            section_data[-4:] = version_mdhms_buf
+            section_data = bytes(section_data)
+
+
         opcode = section.opcode
         self.__check_information_field(section_name, opcode, index, info_feature)
 
