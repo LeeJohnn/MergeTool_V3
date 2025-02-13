@@ -262,23 +262,24 @@ class MergeTool:
 
     def __gen_c_file(self) -> None:
 
-        c_file_format_config = self._top_level_config["CFileFormat"]
-        if c_file_format_config["file_name"] == "":
-            c_filename = self._export_filename + ".c"
-        else:
-            c_filename = c_file_format_config["file_name"]
-        c_file_path = self._export_folder_path + c_filename
-        array_var_name = c_file_format_config["array_var_name"]
-        array_len_var_name = c_file_format_config["array_len_var_name"]
+        if "CFileFormat" in self._top_level_config:
+            c_file_format_config = self._top_level_config["CFileFormat"]
+            if c_file_format_config["file_name"] == "":
+                c_filename = self._export_filename + ".c"
+            else:
+                c_filename = c_file_format_config["file_name"]
+            c_file_path = self._export_folder_path + c_filename
+            array_var_name = c_file_format_config["array_var_name"]
+            array_len_var_name = c_file_format_config["array_len_var_name"]
 
-        c_code = self.bytes_to_C_code_string(
-            self._merge_patch_buf,
-            self._export_filename,
-            self._version_timestamp,
-            array_var_name,
-            array_len_var_name)
-        with open(c_file_path, mode="w+") as fp:
-            fp.write(c_code)
+            c_code = self.bytes_to_C_code_string(
+                self._merge_patch_buf,
+                self._export_filename,
+                self._version_timestamp,
+                array_var_name,
+                array_len_var_name)
+            with open(c_file_path, mode="w+") as fp:
+                fp.write(c_code)
 
     def chunks(self, lst, n):
         """Yield successive n-sized chunks from lst."""
